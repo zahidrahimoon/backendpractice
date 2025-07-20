@@ -1,12 +1,15 @@
 import Fastify from 'fastify'
+import userRoutes from './routes/userRoutes.js';
 
 const fastify = Fastify({
   logger: true
 })
 
 fastify.get('/', function (request, reply) {
-  reply.send({ hello: 'world' })
-})
+    reply.send({ hello: 'world' });
+  });
+
+fastify.register(userRoutes);
 
 const start = async () => {
     try {
