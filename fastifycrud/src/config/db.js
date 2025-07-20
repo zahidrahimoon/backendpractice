@@ -1,9 +1,14 @@
 import { Sequelize } from 'sequelize';
 
-export const sequelize = new Sequelize('users', 'root', 'zahid', {
-  host: 'localhost',
-  dialect: 'mysql',
-});
+export const sequelize = new Sequelize(
+  'users',
+  'zahid',
+  'zahid',
+  {
+    host: 'mypg',
+    dialect: 'postgres',
+  }
+);
 
 sequelize.authenticate()
   .then(() => {
