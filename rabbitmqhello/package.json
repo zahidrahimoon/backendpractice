@@ -1,0 +1,15 @@
+{
+  "name": "rabbitmq-hello-world",
+  "version": "1.0.0",
+  "description": "RabbitMQ Hello World example with amqplib",
+  "main": "emitlog.js",
+  "scripts": {
+    "start": "nodemon rpc_client.js",
+    "server": "nodemon rpc_server.js",
+    "send": "nodemon emitlog.js",
+    "receive": "nodemon receivelog.js"
+  },
+  "dependencies": {
+    "amqplib": "^0.10.4"
+  }
+}
