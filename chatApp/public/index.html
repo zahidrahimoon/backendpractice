@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Socket.IO Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+    input, button {
+      padding: 8px;
+      margin-top: 10px;
+    }
+    #log {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      height: 200px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Socket.IO + Fastify Test</h2>
+
+  <button id="connectBtn">Connect Socket</button>
+  <br /><br />
+
+    <input id="messageInput" placeholder="Enter message" />
+    <button id="sendBtn">Send Message</button>
+    <input id="roomInput" placeholder="Enter room id" />
+    <button id="joinRoomBtn">Join Room</button>
+    <button id="leaveRoomBtn">Leave Room</button>
+
+
+  <div id="log"></div>
+
+  <!-- Socket.IO client -->
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
