@@ -1,12 +1,18 @@
 import { getRoomMessages, savedRoomMessage } from "../db/messages.repository.js";
 
 export function registerSocketHandlers(io, socket) {
+    let socketUsername = null;
 
-    // Join room - only handles joining
-    socket.on("join-room", async (roomId, ack) => {
+    // Join room - handles joining with username
+    socket.on("join-room", async (data, ack) => {
         try {
+            const roomId = typeof data === 'string' ? data : data.roomId;
+            const username = typeof data === 'object' ? data.username : null;
+
+            socketUsername = username || socket.id;
+
             socket.join(roomId);
-            console.log(`${socket.id} joined room ${roomId}`);
+            console.log(`${socketUsername} (${socket.id}) joined room ${roomId}`);
 
             const messages = await getRoomMessages(roomId);
             socket.emit("room-history", messages);
@@ -14,6 +20,7 @@ export function registerSocketHandlers(io, socket) {
 
             socket.to(roomId).emit("user-joined", {
                 userId: socket.id,
+                username: socketUsername,
                 roomId,
             });
 
@@ -28,15 +35,19 @@ export function registerSocketHandlers(io, socket) {
         }
     });
 
-    // Send message - handles saving and broadcasting with ack
-    socket.on("room-message", async ({ roomId, message }, ack) => {
+    // Send message - handles saving and broadcasting with username
+    socket.on("room-message", async (data, ack) => {
         try {
+            const { roomId, message, username } = data;
+            const senderName = username || socketUsername || socket.id;
+
             const savedMessage = await savedRoomMessage(roomId, socket.id, message);
-            
+
             io.to(roomId).emit("room-message", {
                 id: savedMessage.id,
                 roomId: savedMessage.room_id,
                 from: savedMessage.sender_id,
+                username: senderName,
                 message: savedMessage.message,
                 createdAt: savedMessage.created_at,
             });
@@ -55,10 +66,11 @@ export function registerSocketHandlers(io, socket) {
     // Leave room
     socket.on("leave-room", (roomId) => {
         socket.leave(roomId);
-        console.log(`${socket.id} left room ${roomId}`);
+        console.log(`${socketUsername || socket.id} left room ${roomId}`);
         socket.emit("room-left", roomId);
         socket.to(roomId).emit("user-left", {
             userId: socket.id,
+            username: socketUsername,
             roomId,
         });
     });
